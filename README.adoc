@@ -1,0 +1,86 @@
+:last-update-label!:
+
+= Application Web
+
+Ce dépôt contient une application Web simple utilisant http://flask.pocoo.org/[Python Flask] et une base de données https://www.mysql.com/[MySQL].
+
+Cette version préliminaire est une sorte de _Preuve de Concept_ de l'utilisation de Flask avec MySQL et comporte trois routes-tests :
+
+* `/` : renvoie un simple message (`"Salut !"`)
+* `/jemappelle/name` : renvoie un message personnalisé en fonction du nom donné
+* `/lecture_db` : exécute une requête d'interrogation en BDD et renvoie le résultat
+
+Voici un plan large des étapes nécessaires pour faire fonctionner cette application sur un système Linux :
+
+- Installer toutes les dépendances requises
+- Installer et configurer la base de données
+- Démarrer le service de base de données
+- Installer et configurer le serveur Web
+- Démarrer le serveur Web
+
+Les commandes exactes dépendent de votre distribution Linux.
+
+== 1. Installer les dépendances Python
+
+Dépendances à installer sur votre distribution : `python3`, `python3-venv`, `python3-pip`, `flask`, `flask-mysql`
+
+== 2. Base de données - Installation
+
+MySQL Server et Client : `mysql-server`, `mysql-client`
+
+== 3. Base de données - Configuration
+
+- Démarrer le service `mysql`
+- Se connecter au serveur MySQL et ajouter un mot de passe pour l'utilisateur `root`
+  - vous pouvez utiliser la commande `ALTER USER`
+  - la clause `WITH mysql_native_password` sera peut-être nécessaire pour se connecter (en fonction de la version de MySQL et de l'environnement hôte)
+- Redémarrer le service pour prendre en compte les changements ; se reconnecter et vérifier que seul le nouveau mot de passe root fonctionne
+- Créer la base de données `employes_db`
+- Créer une table `employes` avec un champ `nom` de type `VARCHAR(30)`
+- Ajouter quelques noms dans la table `employes` (jeu de test)
+
+== 4. Base de données - Utilisateur pour l'application
+
+Il faut configurer un utilisateur dédié pour l'application pour des raisons de sécurité : l'application n'a besoin que de droits en lecture sur la table `employes`.
+
+- Sur la BDD, créer un utilisateur nommé _dev_
+- Lui donner uniquement les droits en lecture sur la table `employes`
+
+== 5. Copier les fichier de l'application
+
+Sur ce prototype, l'application est constituée d'un seul fichier Python nommé `app.py`.
+
+ - Adapter le contenu du fichier `app.py` pour configurer correctement les informations d'identification et les paramètres de la base de données
+ - Copier le fichier `app.py` dans le répertoire `opt/simple-flask-webapp` sur Ubuntu (vous pouvez copier son contenu dans un nouveau fichier si nécessaire)
+
+== 6. Serveur web - Installation
+
+Créer un environnement virtuel Python et installer Flask et ses dépendances avec _pip_ :
+
+[source,shell]
+----
+python3 -m venv venv
+source venv/bin/activate
+pip install flask flask-mysql cryptography
+----
+
+== 7. Serveur web - Lancement
+
+Toujours depuis cet environnement virtuel, lancer le serveur Web Flask :
+
+[source,shell]
+----
+(venv) root@8108f545fa3d:/# FLASK_APP=/opt/simple-flask-webapp/app.py flask run --host=0.0.0.0 &
+
+----
+
+== 8. Tester l'application
+
+Vous pouvez tester les différents points d'entrée de l'application en utilisant un outil comme `curl` ou `wget` :
+
+[source]
+----
+# curl http://localhost:5000/
+# curl http://localhost:5000/jemappelle?toto
+# curl http://localhost:5000/lecture_db
+----
