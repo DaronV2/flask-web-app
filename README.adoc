@@ -22,7 +22,7 @@ Les commandes exactes dépendent de votre distribution Linux.
 
 == 1. Installer les dépendances Python
 
-Dépendances à installer sur votre distribution : `python3`, `python3-venv`, `python3-pip`, `flask`, `flask-mysql`
+Dépendances à installer sur votre distribution : `python3`, `python3-venv`, `python3-pip`
 
 == 2. Base de données - Installation
 
