@@ -81,6 +81,6 @@ Vous pouvez tester les différents points d'entrée de l'application en utilisan
 [source]
 ----
 # curl http://localhost:5000/
-# curl http://localhost:5000/jemappelle?toto
+# curl http://localhost:5000/jemappelle/toto
 # curl http://localhost:5000/lecture_db
 ----
